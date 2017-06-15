@@ -77,15 +77,58 @@ If you do not have a Bluemix access yet, please register for a [free 30 days acc
 
 Go to [Bluemix Catalog](https://console.ng.bluemix.net/catalog)
 
-<img src="images/1-catalog.png" alt="1-catalog.png" width="50%"/>
+<img src="images/1-catalog.png" alt="1-catalog.png" width="100%"/>
 
 Click on the service, give it a unique name and click on Create button
 
+<img src="images/1-createservice.png" alt="1-createservice.png" width="100%"/>
+
+When finished, click on Launch Dashboard
+
+Bluemix has created for you a Blockchain network of 4 peers to let you focus on developing smart contract applications on top of it.
+Scroll the menu to explore:
+- Network: 4 validating peers + Certificate Authority
+- Blockchain: local view on the Blockchain for peer 0
+- Demo Chaincode: Ready to deploy demos
+- APIs: Swagger-like HTTP call interactions with Blockchain network/peers
+- Logs: server logs on each peer
+- Service Status: service info to let you know maintenance and service upgrades
+- Support: helpful links
+
+Now that you have a blockchain network running, go to the menu Demo Chaincode to play with one demo
+
+<img src="images/1-deploydemo.png" alt="1-deploydemo.png" width="100%"/>
 
 
 # Set up the network
 
-//TODO
+Now that you have tested a Blockchain on the Cloud, let’s do the same on your machine. We will explain a little bit more the way to deploy your own Blockchain network
+
+Install Docker on your machine [here](https://docs.docker.com/engine/installation/#platform-support-matrix)
+
+We will use Hyperledger official Docker images to start a Blockchain network of 4 peers + 1 CA (Certificate Authority)
+
+Images are available [here](https://hub.docker.com/u/hyperledger)
+
+
+
+If you encounter any problem during this lab, you can find links at the end of this document pointing to the correction. There you can verify if you have done any mistake.
+
+All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command. We are using very basic commands that exists on all OS. 
+
+1. Create a Docker file from the official image. Open a console and type theses commands (choose any workspace folder on your machine)
+
+``
+mkdir baseimage
+  touch baseimage/Dockerfile
+  echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
+``
+
+2. Create the file for Docker compose
+
+``
+touch four-peer-ca.yaml 
+``
 
 # Develop the chaincode
 
