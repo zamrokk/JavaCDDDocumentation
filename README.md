@@ -7,7 +7,9 @@ The project is split into different sub projects listed here on section [Referen
 
 An introduction to Bluemix Blockchain as a Service is part of this tutorial promoting the IBM infrastructure to host the network in Production. Remember that blockchain is a distributed system of several nodes, each one can consume potential high resources depending of the distributed applications you deploy on the network. For a tutorial is more suitable to run it on a development mode locally as we don't need such resources.
 
-![Flow](images/architecture.png)
+## Flow
+
+![Flow](images/architecture.png){width=100%}
 
 ## Included Components
 - [Hyperledger Fabric](https://www.hyperledger.org/)
