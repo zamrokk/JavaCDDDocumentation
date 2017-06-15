@@ -60,12 +60,12 @@ Then, we have to develop a client application using the Java SDK. The user will 
 ## Steps
 
 
-1. [Blockchain as a Service on Bluemix](#1-Blockchain-as-a-Service-on-Bluemix)
-2. [Set up the network](#2-Set-up-the-network)
-3. [Develop the chaincode](#3-Develop-the-chaincode)
-4. [Test with HTTP API](#4-Test-with-HTTP-API)
-5. [Develop the application with SDK](#5-Develop-the-application-with-SDK)
-6. [Test with the Spring Boot application](#6-Test-with-the-Spring-Boot-application)
+1. [Blockchain as a Service on Bluemix](#1-blockchain-as-a-service-on-bluemix)
+2. [Set up the network](#2-set-up-the-network)
+3. [Develop the chaincode](#3-develop-the-chaincode)
+4. [Test with HTTP API](#4-test-with-http-api)
+5. [Develop the application with SDK](#5-develop-the-application-with-sdk)
+6. [Test with the Spring Boot application](#6-test-with-the-spring-boot-application)
 
 # Blockchain as a Service on Bluemix
 
