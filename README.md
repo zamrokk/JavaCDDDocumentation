@@ -110,7 +110,7 @@ We will use Hyperledger official Docker images to start a Blockchain network of 
 
 Images are available [here](https://hub.docker.com/u/hyperledger)
 
-> If you encounter any problem during this lab, you can find links at the end of this document pointing to the correction. There you can verify if you have done any mistake.
+> If you encounter any problem during this lab, all the correction is available on the Github subprojects :grin:
 
 All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command. We are using very basic commands that exists on all OS. 
 
@@ -124,7 +124,7 @@ echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
 
 2. Create the file for Docker compose
 
-```
+``
 touch four-peer-ca.yaml 
 ```
 
