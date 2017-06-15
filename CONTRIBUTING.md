@@ -3,7 +3,7 @@ Our project welcomes external contributions! If you have an itch, please feel fr
 
 To contribute code or documentation, please submit a pull request to the GitHub repository.
 
-A good way to familiarize yourself with the codebase and contribution process is to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/IBM/ogs-serverless-apis/issues). Before embarking on a more ambitious contribution, please quickly [get in touch](#communication) with us.
+A good way to familiarize yourself with the codebase and contribution process is to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/zamrokk/JavaCDDDocumentation/issues). Before embarking on a more ambitious contribution, please quickly [get in touch](#communication) with us.
 
 **We appreciate your effort, and want to avoid a situation where a contribution requires extensive rework (by you or by us), sits in the queue for a long time, or cannot be accepted at all!**
 

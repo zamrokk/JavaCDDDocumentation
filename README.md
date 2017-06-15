@@ -69,7 +69,19 @@ Then, we have to develop a client application using the Java SDK. The user will 
 
 # Blockchain as a Service on Bluemix
 
-//TODO
+You can go to Bluemix and use a Blockchain as a Service 
+
+<img src="images/1-blockchianasaservice.png" alt="1-blockchianasaservice.png" width="50%"/>
+
+If you do not have a Bluemix access yet, please register for a [free 30 days account](https://console.ng.bluemix.net/registration)
+
+Go to [Bluemix Catalog](https://console.ng.bluemix.net/catalog)
+
+<img src="images/1-catalog.png" alt="1-catalog.png" width="50%"/>
+
+Click on the service, give it a unique name and click on Create button
+
+
 
 # Set up the network
 
