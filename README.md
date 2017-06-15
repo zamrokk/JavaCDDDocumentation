@@ -328,7 +328,7 @@ Click next
    
 Recreate the project structure as it:
 
-<img src="images/2-packageexplorer.png" alt="2-packageexplorer.png" width="100%"/>
+<img src="images/2-packageexplorer.png" alt="2-packageexplorer.png" width="50%"/>
 
 To create the com.ibm package, you do it like this:
 
