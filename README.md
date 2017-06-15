@@ -170,7 +170,7 @@ services:
 - We are translating inside containers ports to outside using “ports:” You can read it like this “localMachinePort:dockerContainerPort”
 - We name the first peer vp0 (for the block section and the parameter CORE_PEER_ID)
 - Finally, we add a dependency on service named membersrvc (which need to be started before)
-- Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. <span style="color:red">**Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace/myChaincodeProject ) !!!**</span> Explanation to read is like this “mylocalWorkspacePath:myMountedFolderOnDocker”. **Please do not change the name of the mounted folder on docker side “:/chaincode”**
+- Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. **Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace/myChaincodeProject )**.Explanation to read is like this “mylocalWorkspacePath:myMountedFolderOnDocker”.**Please do not change the name of the mounted folder on docker side “:/chaincode”**
 
 > For Windows, do not forget to share C drive for example. Otherwise the mount will not work … Also respect the \ paths 
 
@@ -226,6 +226,34 @@ Save and close
 
 Here we have mounted Docker socket to dialog with Docker deamon and set security enabled to false
 
+6. Create the file for the Certificate Authority
+  
+```bash
+  touch base/membersrvc.yaml 
+```  
+
+  and then edit it
+
+```yaml
+version: '2'
+services:
+  membersrvc:
+    ports:
+      - "7054:7054"
+    command: membersrvc
+    environment:
+      - MEMBERSRVC_CA_LOGGING_SERVER=INFO 
+      - MEMBERSRVC_CA_LOGGING_CA=INFO 
+      - MEMBERSRVC_CA_LOGGING_ECA=INFO
+      - MEMBERSRVC_CA_LOGGING_ECAP=INFO 
+      - MEMBERSRVC_CA_LOGGING_ECAA=INFO 
+      - MEMBERSRVC_CA_LOGGING_ACA=INFO 
+      - MEMBERSRVC_CA_LOGGING_ACAP=INFO 
+      - MEMBERSRVC_CA_LOGGING_TCA=INFO 
+      - MEMBERSRVC_CA_LOGGING_TCAP=INFO 
+      - MEMBERSRVC_CA_LOGGING_TCAA=INFO 
+      - MEMBERSRVC_CA_LOGGING_TLSCA=INFO
+```
 
 # Develop the chaincode
 
