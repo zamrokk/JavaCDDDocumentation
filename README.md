@@ -9,7 +9,8 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 
 ## Flow
 
-![Flow](images/architecture.png =100%)
+<img src="images/architecture.png" alt="Flow" style="width: 100%;"/>
+
 
 ## Included Components
 - [Hyperledger Fabric](https://www.hyperledger.org/)
