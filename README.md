@@ -120,8 +120,8 @@ All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… )
 
 ``
 mkdir baseimage
-  touch baseimage/Dockerfile
-  echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
+touch baseimage/Dockerfile
+echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
 ``
 
 2. Create the file for Docker compose
