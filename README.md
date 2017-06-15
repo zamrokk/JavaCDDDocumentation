@@ -9,7 +9,7 @@ In the following sections you will discover how Blockchain technology can be use
 * Executing a contract based on a specific location
 * Querying the contract State to know if the farmer has received a payment
 
-<img src="images/usecase.png" alt="Flow" width="100%"/>
+<img src="images/usecase.png" alt="Usecase" width="100%"/>
 
 In this business scenario each participant has entered into a business agreement with each other and all parties are known and trusted by each other. For each contract deployment, one instance of the java project is running on the Blockchain. For our example, we will create only one contract between two people, but you can do as many as you want.  
 
