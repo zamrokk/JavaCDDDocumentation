@@ -116,7 +116,7 @@ All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… )
 
 1. Create a Docker file from the official image. Open a console and type theses commands (choose any workspace folder on your machine)
 
-```
+```bash
 mkdir baseimage
 touch baseimage/Dockerfile
 echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
@@ -124,9 +124,108 @@ echo "FROM hyperledger/fabric-peer:x86_64-0.6.1-preview" > baseimage/Dockerfile
 
 2. Create the file for Docker compose
 
-``
+```bash
 touch four-peer-ca.yaml 
 ```
+
+3. Open this new file on an editor (can double click on it from the file explorer) and type the beginning of the file
+
+```yaml
+version: '2'
+services:
+  baseimage:
+    build: ./baseimage
+    image: hyperledger/fabric-baseimage:latest
+
+  membersrvc:
+    image: hyperledger/fabric-membersrvc:x86_64-0.6.1-preview
+    extends:
+      file: base/membersrvc.yaml
+      service: membersrvc
+
+  vp0:
+    image: hyperledger/fabric-peer:x86_64-0.6.1-preview
+    extends:
+      file: base/peer-unsecure-base.yaml
+      service: peer-unsecure-base
+    ports:
+      - "7050:7050" # REST
+      - "7051:7051" # Grpc
+      - "7053:7053" # Peer callback events
+    environment:
+      - CORE_PEER_ID=vp0
+    links:
+      - membersrvc
+    volumes:
+      - /Users/benjaminfuentes/git:/chaincode
+```
+
+4. Save the file and leave it open
+  
+  As you can see we refer to the base image, we declare a membersrvc peer that is the Certificate Authority and only 1 peer named vp0.
+  We will write the file base/membersrvc.yaml later, let’s focus on our current file now.
+  
+  Have a look on the peer vp0 configuration:
+- We are going to write the base file for all validating peer on base/peer-unsecure-base.yaml. We are not going to use security enabled for this demo in order to simplify all API requests, also we will use the NOOPS consensus (i.e autovalidating consensus for development). You can have a look on Fabric options to enable security and configure PBFT [see here](http://hyperledger-fabric.readthedocs.io/en/v0.6/Setup/Network-setup) )
+- We are translating inside containers ports to outside using “ports:” You can read it like this “localMachinePort:dockerContainerPort”
+- We name the first peer vp0 (for the block section and the parameter CORE_PEER_ID)
+- Finally, we add a dependency on service named membersrvc (which need to be started before)
+- Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. <span style="color:red">**Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace/myChaincodeProject ) !!!**</span> Explanation to read is like this “mylocalWorkspacePath:myMountedFolderOnDocker”. **Please do not change the name of the mounted folder on docker side “:/chaincode”**
+
+> For Windows, do not forget to share C drive for example. Otherwise the mount will not work … Also respect the \ paths 
+
+<img src="images/1-dockerwin.png" alt="1-dockerwin.png" width="100%"/>
+
+> YAML files are really boring strict with space indentation, be very careful. Copy/paste from correction files on links at the end of this document if you have any problem. Use spaces, no tabs !
+
+4.	Now that you have understood the configuration, you can add 3 more peers at the end of this file four-peer-ca.yaml: vp1, vp2, and vp3.
+- Copy paste vp0 block
+- Rename peer name
+- Rename CORE_PEER_ID
+- Translate local machine ports with 1000 offset (i.e. vp1 from 8050 to 8053, vp2 from 9050 to 9053 and vp4 from 10050 to 10053). Inside container ports are kept the same obviously
+- You do not need to mount a volume as we will deploy chaincode only on vp0.
+- Also you will need to add this on the environment section to refer to the first node : 
+```yaml
+- CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051
+```
+- Finally, on the links section, add a dependency to vp0
+```yaml
+- vp0
+```
+
+Save and close file.
+
+5.	As that the main file is done, let’s create the common peer file base/peer-unsecure-base.yaml
+```bash
+mkdir base
+touch base/peer-unsecure-base.yaml
+```
+
+and edit the file
+
+```yaml
+version: '2'
+services:
+  peer-unsecure-base:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - CORE_PEER_DISCOVERY_PERIOD=300s
+      - CORE_PEER_DISCOVERY_TOUCHPERIOD=301s
+      - CORE_PEER_ADDRESSAUTODETECT=true
+      - CORE_VM_ENDPOINT=unix:///var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_PKI_ECA_PADDR=membersrvc:7054
+      - CORE_PEER_PKI_TCA_PADDR=membersrvc:7054
+      - CORE_PEER_PKI_TLSCA_PADDR=membersrvc:7054
+      - CORE_SECURITY_ENABLED=false
+    command: sh -c "sleep 10; peer node start"
+```
+
+Save and close
+
+Here we have mounted Docker socket to dialog with Docker deamon and set security enabled to false
+
 
 # Develop the chaincode
 
