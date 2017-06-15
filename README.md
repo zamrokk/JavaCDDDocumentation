@@ -618,7 +618,11 @@ Boolean contractExecuted = false;
 
 We will use Mockito to mock the Blockchain and detect any problem in our code before deploying it.
 
-For more info about [mockito](http://site.mockito.org)    [mockito](https://github.com/mockito/mockito.github.io/raw/master/img/logo%402x.png)
+For more info about [mockito](http://site.mockito.org)   
+ 
+<img src="https://github.com/mockito/mockito.github.io/raw/master/img/logo%402x.png" alt="mockito" width="200px"/>
+
+
 
 2.	On your project, go to folder /src/test/java. You will find a class named JavaCDDTest
 
