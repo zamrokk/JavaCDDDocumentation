@@ -46,10 +46,61 @@ Then, we have to develop a client application using the Java SDK. The user will 
 - [Bluemix](https://console.ng.bluemix.net/)
 - [Docker](https://www.docker.com)
 
+## Prerequisites
+
+- Bluemix account: [link](https://console.ng.bluemix.net/registration)
+- Docker: [link](https://docs.docker.com/engine/installation/#platform-support-matrix)
+- Docker compose (version > 1.10): [link](https://docs.docker.com/compose/install)
+- Postman: [link](https://www.getpostman.com)
+- Java JDK 8: [link](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html)
+- Eclipse: [link](https://www.eclipse.org/downloads)
+- Eclipse Maven plugin: (you can use the one embedded on Eclipse)
+- Eclipse Gradle plugin: (depending on the version, it can be already included or [link](https://projects.eclipse.org/projects/tools.buildship))
+
+## Steps
+
+
+1. [Blockchain as a Service on Bluemix](#1-Blockchain-as-a-Service-on-Bluemix)
+2. [Set up the network](#2-Set-up-the-network)
+3. [Develop the chaincode](#3-Develop-the-chaincode)
+4. [Test with HTTP API](#4-Test-with-HTTP-API)
+5. [Develop the application with SDK](#5-Develop-the-application-with-SDK)
+6. [Test with the Spring Boot application](#6-Test-with-the-Spring-Boot-application)
+
+# Blockchain as a Service on Bluemix
+
+//TODO
+
+# Set up the network
+
+//TODO
+
+# Develop the chaincode
+
+//TODO
+
+# Test with HTTP API
+
+//TODO
+
+# Develop the application with SDK
+
+//TODO
+
+# Test with the Spring Boot application
+
+//TODO
+
+## Contributing
+[link](CONTRIBUTING.md)
+
+## Troubleshooting
+[maintainers link](MAINTAINERS.md)
+
 ## References
-* [JavaCDD](https://github.com/zamrokk/JavaCDD) : the chaincode java project
-* [JavaCDDNetwork](https://github.com/zamrokk/JavaCDDNetwork) : the scripts to create / destroy the blockchain network locally 
-* [JavaCDDWeb](https://github.com/zamrokk/JavaCDDWeb): the client web application using the JavaSDK and exposing an API
+- [JavaCDD](https://github.com/zamrokk/JavaCDD) : the chaincode java project
+- [JavaCDDNetwork](https://github.com/zamrokk/JavaCDDNetwork) : the scripts to create / destroy the blockchain network locally 
+- [JavaCDDWeb](https://github.com/zamrokk/JavaCDDWeb): the client web application using the JavaSDK and exposing an API
 
 # License
 [Apache 2.0](LICENSE)
