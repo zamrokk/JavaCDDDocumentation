@@ -9,8 +9,18 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 
 ## Flow
 
+This flow is in two part, first the user is interacting via HTTP directly to the peer without security.
+Then, we have to develop a client application using the Java SDK. The user will interact via the HTTP API over the Spring Boot application.
+
 <img src="images/architecture.png" alt="Flow" width="100%"/>
 
+1. The user opens Postman to do HTTP calls (DEPLOY,QUERY,INVOKE requests)
+2. A query or invoke request is sent to a peer where a chaincode has been already deployed
+3. The peer reads the Ledger state and/or creates a new transaction that is dispatched over the other peers
+4. The user is using now the Spring Boot application API to interact with the blockchain network
+5. As the application has started, the user has been enrolled with the CA
+6. The application is using the Java SDK and the user certificate to communicate with the peer
+7. Same as step 3
 
 ## Included Components
 - [Hyperledger Fabric](https://www.hyperledger.org/)
@@ -20,9 +30,9 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 - [Docker](https://www.docker.com)
 
 ## References
-* [JavaCDD](https://github.com/WASdev/sample.microservicebuilder.docs) : the chaincode java project
-* [JavaCDDNetwork]() : the scripts to create / destroy the blockchain network locally 
-* [JavaCDDWeb](): the client web application using the JavaSDK and exposing an API
+* [JavaCDD](https://github.com/zamrokk/JavaCDD) : the chaincode java project
+* [JavaCDDNetwork](https://github.com/zamrokk/JavaCDDNetwork) : the scripts to create / destroy the blockchain network locally 
+* [JavaCDDWeb](https://github.com/zamrokk/JavaCDDWeb): the client web application using the JavaSDK and exposing an API
 
 # License
 [Apache 2.0](LICENSE)
