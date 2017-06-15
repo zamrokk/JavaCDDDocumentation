@@ -9,7 +9,7 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 
 ## Flow
 
-<img src="images/architecture.png" alt="Flow" style="width:100%"/>
+<img src="images/architecture.png" alt="Flow" width="100%"/>
 
 
 ## Included Components
