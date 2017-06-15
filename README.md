@@ -255,13 +255,381 @@ services:
       - MEMBERSRVC_CA_LOGGING_TLSCA=INFO
 ```
 
+Save and close file
+
+7.	All is set now, let’s start the network using the command
+
+```bash
+docker-compose -f four-peer-ca.yaml up
+```
+
+To see containers running, open another terminal and send command
+
+```bash
+docker ps
+```
+
+8.	If you want to stop the network, escape the running docker compose (Ctrl + C) or use the command
+
+```bash
+docker-compose -f four-peer-ca.yaml stop
+```
+
+This will stop all containers
+
+To see containers stopped:
+
+```bash
+docker ps -a
+```
+
+9.	If you want to destroy all containers, just run. (in case you did a mistake and you want to start from scratch from the docker-compose config files)
+
+```bash
+docker-compose -f four-peer-ca.yaml down
+```
+
+Finally test your Blockchain network with Postman.
+
+To install Postman [here](https://www.getpostman.com)
+
+Launch it from the menu bar and import the file from [download link](https://github.com/zamrokk/JavaCDD/blob/master/postman.json)
+
+You can pull it from Git or save the raw text from your browser 
+
+<img src="images/1-importPostman.png" alt="1-importPostman.png" width="100%"/>
+
+Drop the file, or browse folder
+
+On the Collections tab, click on the first line named CHAIN V0.6. Click on button Send, you should have a response **200 OK** with chain height equals to **1**
+
+<img src="images/1-postmanchain.png" alt="1-postmanchain.png" width="100%"/>
+
+
 # Develop the chaincode
 
-//TODO
+In the following section you will code a CDD derivative chaincode contract in Java using Hyperledger Fabric
+
+Install [Eclipse](https://www.eclipse.org/downloads)
+
+> Preparing the project
+
+1. Open Eclipse and create a new Maven Project
+
+<img src="images/2-newmavenproject.png" alt="2-newmavenproject.png" width="100%"/>
+
+<img src="images/2-newmavenprojectnext.png" alt="2-newmavenprojectnext.png" width="100%"/>
+
+Click next
+
+<img src="images/2-newmavenprojectfinish.png" alt="2-newmavenprojectfinish.png" width="100%"/>
+
+2. You need to copy some configuration files and pojos java class to help you start and let us focus on the important files.
+   
+Recreate the project structure as it:
+
+<img src="images/2-packageexplorer.png" alt="2-packageexplorer.png" width="100%"/>
+
+To create the com.ibm package, you do it like this:
+
+<img src="images/2-createpackage.png" alt="2-createpackage.png" width="100%"/>
+
+Copy theses files from the project url into its correct folder (https://github.com/zamrokk/JavaCDD):
+- build.gradle
+- pom.xml
+- /src/main/java/com/ibm/ContractRecord.java
+- /src/main/java/com/ibm/WeatherObservationResponse.java
+- /src/test/java/com/ibm/JavaCDDTest.java
+
+3. Have a look on the project structure. You have the choice to use Maven or Gradle for development but Gradle will be mandatory when the code will be deployed as Gradle file will be only run by Hyperledger on version V0.6.1
+   
+At the moment, you have 2 POJOs class files: 
+- ContractRecord
+- WeatherObservationResponse
+   
+You have a test class available: JavaCDDTest
+   
+You will be asked to code a JavaCDD class file that extends ChaincodeBase
+
+4. Create a new class JavaCDD on package com.ibm that’s extends ChaincodeBase. You will write later a main method. You can see that some methods need to be implemented too.
+
+5. Look at dependencies to see from which package is coming ChaincodeBase class. The fabric-sdk-java jar will be downloaded automatically during compilation. Open pom.xml and build.gradle
+
+Maven
+```xml
+<dependency>
+    <groupId>org.hyperledger.fabric-sdk-java</groupId>
+    <artifactId>fabric-sdk-java</artifactId>
+    <version>0.6</version>
+</dependency>
+```
+Gradle
+``` 
+compile 'org.hyperledger.fabric-sdk-java:fabric-sdk-java:0.6'
+```
+
+This jar is available on m2 central repository so no problem :smiley:
+
+6. Click on the red cross of the class, and click on Add unimplemented methods. Now you can do a maven compile or gradle compileJava. Both should compile fine.
+
+<img src="images/2-addunimplementedmethos.png" alt="2-addunimplementedmethos.png" width="100%"/>
+
+To do so, open Run Configurations…
+
+<img src="images/2-runconfigurations.png" alt="2-runconfigurations.png" width="100%"/>
+
+For Maven
+<img src="images/2-mavenrun.png" alt="2-mavenrun.png" width="100%"/>
+
+For Gradle
+<img src="images/2-gradlerun.png" alt="2-gradlerun.png" width="100%"/>
+
+Now your project should not have any red errors. Compilation is done
+
+> Implementing overridden methods
+
+**Eclipse TIP:** To auto-indent files, go to top menu Source > Format (Shift+Ctrl+F)
+
+1.	First step is to start a main thread and name your chaincode. Edit it as follow: 
+
+```java
+private static Log log =LogFactory.getLog(JavaCDD.class);
+
+public static void main(String[] args) throws Exception {
+new JavaCDD().start(args);
+}
+
+@Override
+public String getChaincodeID() {
+	return "JavaCDD";
+}
+```
+
+2.	Start coding the entry point method run. It is the dispatcher entry point for INVOKE and DEPLOY API.
+init function is used while deployment only and all others for normal invocations.
+
+```java
+@Override
+/**
+* Entry point of invocation interaction
+* 
+* @param stub
+* @param function
+* @param args
+*/
+public String run(ChaincodeStub stub, String function, String[] args) {
+	log.info("In run, function:" + function);
+	switch (function) {
+	case "init":
+		init(stub, function, args);
+		break;
+	case "executeContract":
+		String re = executeContract(stub, args);
+		log.info("Return of executeContract : " + re);
+		return re;
+	default:
+		String warnMessage = "{\"Error\":\"Error function " + function + " not found\"}";
+		log.warn(warnMessage);
+		return warnMessage;
+	}
+	return null;
+}
+```
+
+3.	Last overridden method is query. We will have to retrieve the contract state and return it back to the client. Do it as below
+
+```java
+/**
+* This function can query the current State of the contract
+* @param stub
+* @param function
+* @param args
+*            client name
+* @return total amount received for this client
+*/
+@Override
+public String query(ChaincodeStub stub, String function, String[] args) {
+if (args.length != 1) {
+		return "{\"Error\":\"Incorrect number of arguments. Expecting name of the client to query\"}";
+	}
+	String clientName = stub.getState(args[0]);
+	log.info("Called " + function + " on client : " + clientName);
+	if (clientName != null && !clientName.isEmpty()) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			ContractRecord contractRecord = mapper.readValue(clientName, ContractRecord.class);
+			return "" + contractRecord.totalAmountReceived;
+		} catch (Exception e) {
+			return "{\"Error\":\"Failed to parse state for client " + args[0] + " : " + e.getMessage() + "\"}";
+		}
+	} else {
+		return "{\"Error\":\"Failed to get state for client " + args[0] + "\"}";
+	}
+}
+```
+
+> Implementing initialization and invocation methods
+  
+1.	At deployment we will need to initialize the contract. Copy the code below 
+
+```java
+/**
+* This function initializes the contract
+* @param stub
+* @param function
+* @param args
+*            client name, temperature threshold, amount received when
+*            contract is activated
+* @return
+*/
+public String init(ChaincodeStub stub, String function, String[] args) {
+	if (args.length != 3) {
+		return "{\"Error\":\"Incorrect number of arguments. Expecting 3 : client name, temperature threshold, amount received when contract is activated \"}";
+	}
+	try {
+		ContractRecord contractRecord = new ContractRecord(args[0], Integer.parseInt(args[1]),Integer.parseInt(args[2]));
+		stub.putState(args[0], contractRecord.toString());
+	} catch (NumberFormatException e) {
+		return "{\"Error\":\"Expecting integer value for temperature threshold and amount received\"}";
+	}
+	return null;
+}
+```
+
+2. Then, here is the main piece. We are coding the contract for a specific location passed as parameters. We have an API call to Weather API that will return the current temperature and will compare it against the threshold of the contract. 
+
+If the temperature is below, then the client will have its account credited with the redemption agreement amount of the contract, otherwise nothing happens.
+
+> (Credentials of the service API have been hardcoded, you can change this value with your own credentials on Bluemix)
+
+```java
+/**
+* This function calls Weather API to check if the temperature on a location
+* is inferior to the contract's threshold. If yes, the client is redeemed
+* for the value agreed on the contract
+* 
+* @param stub
+* @param args
+*            client name, postal Code, country Code
+* @return
+*/
+public String executeContract(ChaincodeStub stub, String[] args) {
+	log.info("in executeContract");
+Boolean contractExecuted = false;
+
+	if (args.length != 3) {
+		String errorMessage = "{\"Error\":\"Incorrect number of arguments. Expecting 3: client name, postal Code, country Code\"}";
+		log.error(errorMessage);
+		return errorMessage;
+	}
+	ObjectMapper mapper = new ObjectMapper();
+	ContractRecord contractRecord;
+	try {
+		contractRecord = mapper.readValue(stub.getState(args[0]), ContractRecord.class);
+	} catch (Exception e1) {
+
+		String errorMessage = "{\"Error\":\" Problem retrieving state of client contract : " + e1.getMessage()+ "  \"}";
+		log.error(errorMessage);
+		return errorMessage;
+	}
+
+	String postalCode = args[1];
+	String countryCode = args[2];
+
+	// weather service
+	String url = "https://twcservice.mybluemix.net/api/weather/v1/location/" + postalCode + "%3A4%3A" + countryCode
+				+ "/observations.json?language=en-GB";
+
+	HttpClient httpclient = new DefaultHttpClient();
+	HttpGet httpget = new HttpGet(url);
+
+	SSLSocketFactory sf;
+	try {
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, null, null);
+		sf = new SSLSocketFactory(sslContext);
+	} catch (Exception e1) {
+		String errorMessage = "{\"Error\":\" Problem with SSLSocketFactory : " + e1.getMessage() + "  \"}";
+		log.error(errorMessage);
+		return errorMessage;
+	}
+
+	sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		Scheme sch = new Scheme("https", sf, 443);
+		httpclient.getConnectionManager().getSchemeRegistry().register(sch);
+
+	((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
+				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+				new UsernamePasswordCredentials("dfa7551a-2613-4f5c-bff7-339649770aa5", "gvbmK5JsGO"));
+
+	HttpResponse response;
+	try {
+		response = httpclient.execute(httpget);
+
+		log.info("Called Weather service");
+
+		int statusCode = response.getStatusLine().getStatusCode();
+
+		HttpEntity httpEntity = response.getEntity();
+		String responseString = EntityUtils.toString(httpEntity);
+
+		if (statusCode == HttpStatus.SC_OK) {
+
+			log.info("Weather service call OK");
+
+			WeatherObservationResponse weatherObservationResponse = mapper.readValue(responseString,WeatherObservationResponse.class);
+
+			if (weatherObservationResponse.getObservation().getTemp() < contractRecord.temperatureThreshold) {
+					// then please redeem the client
+				contractRecord.totalAmountReceived += contractRecord.amountReceivedWhenContractIsActivated;
+				stub.putState(contractRecord.clientName, contractRecord.toString());
+				log.info("Contract condition valid " + weatherObservationResponse.getObservation().getTemp() + " < "
+							+ contractRecord.temperatureThreshold);
+                 contractExecuted=true;
+			} else {
+				log.info("Contract condition invalid " + weatherObservationResponse.getObservation().getTemp()+ " > " + contractRecord.temperatureThreshold);
+			}
+
+		} else {
+			String errorMessage = "{\"Error\":\"Problem while calling Weather API : " + statusCode + " : "+ responseString + "\"}";
+			log.error(errorMessage);
+			return errorMessage;
+		}
+
+	} catch (Exception e) {
+		String errorMessage = "{\"Error\":\"Problem while calling Weather API : " + e.getMessage() + "\"}";
+		log.error(errorMessage);
+		try {
+			log.error(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(e.getStackTrace()));
+		} catch (JsonProcessingException e2) {
+			e2.printStackTrace();
+		}
+		return errorMessage;
+	}
+
+	return contractExecuted.toString();
+}
+```
+
 
 # Test with HTTP API
 
-//TODO
+1.	Local testing
+
+We will use Mockito to mock the Blockchain and detect any problem in our code before deploying it.
+
+For more info about [mockito](http://site.mockito.org)    [mockito](https://github.com/mockito/mockito.github.io/raw/master/img/logo%402x.png)
+
+2.	On your project, go to folder /src/test/java. You will find a class named JavaCDDTest
+
+There are two Junit test cases on it.
+Nice test case should always execute the contract but not increment the client’s account
+Fairbanks should increment (as it is very cold there!)
+
+Logs and Eclipse debug mode should be enough for you to check if the redeem amount has changed.
+
+3.	Compile all with Maven before launching tests, doing a Maven Install
+
 
 # Develop the application with SDK
 
