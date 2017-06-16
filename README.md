@@ -787,6 +787,11 @@ You maybe have noticed that we have changed the SDK dependency. It is because, w
 
 3. Create a controller class named MyController on the package com.ibm.controller 
 
+<img src="images/3-mycontroller.png" alt="3-mycontroller.png" width="50%"/>
+
+<img src="images/3-javapackage.png" alt="3-javapackage.png" width="50%"/>
+
+
 
 
 # Test with the Spring Boot application
