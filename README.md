@@ -1047,8 +1047,40 @@ docker-compose -f four-peer-ca.yaml up
 
 <img src="images/3-compile.png" alt="3-compile.png" width="100%"/>
 
+6. Now you can start you Spring Boot Application
+
+<img src="images/3-start.png" alt="3-start.png" width="100%"/>
+
+> If you have an error “Identity or token does not match”. Is because you have launched several time your server and maybe you have crashed on the client side getting a broken certificate. As the Member Service on the Blockchain network will accept only to send you one time this credentials, the best is to destroy the network and relaunch it again. Also, delete the wallet on your local path ~/test.properties. Then launch again your Spring boot application.
+
+7. Open again Postman and select QUERY CLIENT V0.6, click on SEND
+
+You should have the API responding SUCCESS with **message “0”** if the client has not been redeemed yet
+
+<img src="images/3-query.png" alt="3-query.png" width="100%"/>
+
+8. Now select INVOKE CLIENT V0.6, click on SEND
+
+You should have the API responding SUCCESS 
+
+<img src="images/3-invoke.png" alt="3-invoke.png" width="100%"/>
+
+9. Try again QUERY CLIENT V0.6, click on SEND
+
+You should have the API responding SUCCESS with **message “42”** because the client has been redeemed
+
+<img src="images/3-query42.png" alt="3-query42.png" width="100%"/>
 
 
+## CONGRATULATIONS !!!
+
+<img src="http://ualr.edu/philosophy/files/2011/06/trophy-cup.jpg" alt="trophycup" width="300px"/>
+
+You have successfully invoked your chaincode and incremented the client account. You know can now:
+- Change location parameters while invoking chaincode
+- Change the code adding begin and end date validity checks
+- Plug another temperature feed from an external API service or IoT device
+- Make the code more deterministic !
 
 ## Contributing
 [link](CONTRIBUTING.md)
