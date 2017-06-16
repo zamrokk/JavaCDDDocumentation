@@ -312,7 +312,7 @@ In the following section you will code a CDD derivative chaincode contract in Ja
 
 Install [Eclipse](https://www.eclipse.org/downloads)
 
-> Preparing the project
+## Preparing the project
 
 1. Open Eclipse and create a new Maven Project
 
@@ -386,7 +386,7 @@ For Gradle
 
 Now your project should not have any red errors. Compilation is done
 
-> Implementing overridden methods
+## Implementing overridden methods
 
 **Eclipse TIP:** To auto-indent files, go to top menu Source > Format (Shift+Ctrl+F)
 
@@ -468,7 +468,7 @@ if (args.length != 1) {
 }
 ```
 
-> Implementing initialization and invocation methods
+## Implementing initialization and invocation methods
   
 1.	At deployment we will need to initialize the contract. Copy the code below 
 
@@ -614,7 +614,7 @@ Boolean contractExecuted = false;
 
 # Test with HTTP API
 
-1.	Local testing
+## Local testing
 
 We will use Mockito to mock the Blockchain and detect any problem in our code before deploying it.
 
@@ -622,9 +622,7 @@ For more info about [mockito](http://site.mockito.org)
  
 <img src="https://github.com/mockito/mockito.github.io/raw/master/img/logo%402x.png" alt="mockito" width="200px"/>
 
-
-
-2.	On your project, go to folder /src/test/java. You will find a class named JavaCDDTest
+1.	On your project, go to folder /src/test/java. You will find a class named JavaCDDTest
 
 There are two Junit test cases on it.
 Nice test case should always execute the contract but not increment the client’s account
@@ -632,12 +630,86 @@ Fairbanks should increment (as it is very cold there!)
 
 Logs and Eclipse debug mode should be enough for you to check if the redeem amount has changed.
 
-3.	Compile all with Maven before launching tests, doing a Maven Install
+2.	Compile all with Maven before launching tests, doing a Maven Install
+
+<img src="2-maveninstall.png" alt="2-maveninstall.png" width="100%"/>
+
+3.	Launch the Junit tests. Right click on project or test file and click Run as > JUnit Test or Debug as > JUnit Test
+
+> All tests should have passed green. Check then the logs, to see if scenarios have run as expected. If you are not sure, run on debug mode and add breakpoints to your code
+
+## Deployment
+
+As your chaincode is running correctly locally with a mocked Blockchain, it is time to deploy it on the real one.
+
+To deploy a chaincode we will use the HTTP API with Postman
+
+1. Open Postman and run DEPLOY V0.6
+
+<img src="2-deploy.png" alt="2-deploy.png" width="100%"/>
+
+> (Optional) 
+Be sure that your Blockchain network is running (see Part 1)
+Also check that your project name is corresponding to the mounted path /chaincode/JavaCDD. Use docker to list files on mounted folder
+(replace in red by your vp0 container id). Ajust the container path in Postman it your project is located differently.
+
+```bash
+docker exec -it PEERVP0CONTAINERID /bin/bash
+ls /chaincode
+```
+> (Optional)
+There is another way to deploy a chaincode using not a path by an url, just replace the path value by the url.
+
+You should have a **200 OK**
+
+<img src="2-deployok.png" alt="2-deployok.png" width="100%"/>
+
+> In the returned Json, copy the value of result>message. It is the unique identifier of your chaincode, you will need it for after 
+
+The deployment is asynchronous. Even if Hyperledger send you back a correct response, it just means that your request was correct and has been processed. To be sure that the new smart contract has been started, go to a console and do a docker ps. If you see a container name containing the chaincode ID of your request, it means the smart contract is running. Speed depends on the performance of your machine and the size of the code, it can take from 2s to few minutes
+
+If you see an ERROR in the peer container vp0 logs, you may had a path not pointing to your project location … Check it well.
+If all is OK, 4 new containers have been created and are running. Their names contains the chaincodeID you got and the response.
+
+2.	Call the query you coded to see if the default amount has been initialized
+
+<img src="2-postmanquery.png" alt="2-postmanquery.png" width="100%"/>
+
+You should have a **zero amount** on the message returned
+
+> On the request body, do not forget to change params>chaincodeID>name by the one returned on the previous step
+
+## Interact more with your chaincode
+
+1. Run INVOKE V0.6
+
+<img src="2-postmaninvoke.png" alt="2-postmaninvoke.png" width="100%"/>
+
+Do not forget to change the chaincodeID as step before, let the default parameters pointing to Fairbanks and you should have a response **200 OK**. 
+
+For information, the data result>message on the response corresponds to the transaction ID
+
+Let’s call the query again to check the result 
+
+<img src="2-postmaninvokeok.png" alt="2-postmaninvokeok.png" width="100%"/>
+
+You should have an amount with value **42** on the message returned. This confirms that your farmer has been credited of 42$.
 
 
 # Develop the application with SDK
 
-//TODO
+## Initialization
+
+We will now use the Java SDK to interact with our blockchain instead of the HTTP API. HTTP API will be deprecated on V1.0 of Hyperledger so we will need to use GRPC channel to communicate with the network, it on what is based the SDK.
+
+We want to use a real java client app to keep our wallet safe, so we choose to use a simple spring boot project and build an API over it for testing (You could do it with any other java application using JavaFx, Swing or whatever support the SDK which is built on java 8)
+
+1. Create a new maven Project in Eclipse named JavaCDDWeb
+
+
+
+
+
 
 # Test with the Spring Boot application
 
