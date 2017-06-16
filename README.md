@@ -168,8 +168,8 @@ services:
 - We are going to write the base file for all validating peer on base/peer-unsecure-base.yaml. We are not going to use security enabled for this demo in order to simplify all API requests, also we will use the NOOPS consensus (i.e autovalidating consensus for development). You can have a look on Fabric options to enable security and configure PBFT [see here](http://hyperledger-fabric.readthedocs.io/en/v0.6/Setup/Network-setup) )
 - We are translating inside containers ports to outside using “ports:” You can read it like this “localMachinePort:dockerContainerPort”
 - We name the first peer vp0 (for the block section and the parameter CORE_PEER_ID)
-- Finally, we add a dependency on service named membersrvc (which need to be started before)
-- Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. **Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace/myChaincodeProject )**.Explanation to read is like this “mylocalWorkspacePath:myMountedFolderOnDocker”.**Please do not change the name of the mounted folder on docker side “:/chaincode”**
+- Finally, we add a dependency on service named membersrvc (which needs to be started before)
+- Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. **Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace )**.Mounting is in this order “mylocalWorkspacePath:myMountedFolderOnDocker”.**Please do not change the name of the mounted folder on docker side “:/chaincode”**
 
 > For Windows, do not forget to share C drive for example. Otherwise the mount will not work … Also respect the \ paths 
 
