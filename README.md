@@ -706,8 +706,86 @@ We want to use a real java client app to keep our wallet safe, so we choose to u
 
 1. Create a new maven Project in Eclipse named JavaCDDWeb
 
+<img src="images/3-newmavenproject.png" alt="3-newmavenproject.png" width="100%"/>
+
+<img src="images/3-newmavenprojectnext.png" alt="3-newmavenprojectnext.png" width="100%"/>
+
+Skip the archetype selection, use the default workspace location
+
+<img src="images/3-newmavenprojectfinish.png" alt="3-newmavenprojectfinish.png" width="100%"/>
+
+you can edit as above, but we will override it on the next step anyway
+
+2.	Edit pom.xml
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ibm</groupId>
+	<artifactId>JavaCDDWeb</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.3.5.RELEASE</version>
+	</parent>
+
+	<packaging>war</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>me.reactiv.fabric-java-sdk</groupId>
+			<artifactId>fabric-java-sdk</artifactId>
+			<version>0.6.6</version>
+		</dependency>
 
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>1.3.5.RELEASE</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
+```
+
+This is the simplest configuration that we can have to have a REST API ready
+
+You maybe have noticed that we have changed the SDK dependency. It is because, we will need the last version of the Git branch 0.6 and it has not been released officially yet on Maven Central. 
+
+3. Create a controller class named MyController on the package com.ibm.controller 
 
 
 
