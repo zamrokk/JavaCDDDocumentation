@@ -26,7 +26,7 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 ## Flow
 
 This flow is in two part, first the user is interacting via HTTP directly to the peer without security.
-Then, we have to develop a client application using the Java SDK. The user will interact via the HTTP API over the Spring Boot application.
+Then, we develop a client application using the Java SDK with security enabled. The user will interact via the HTTP API on top of the Spring Boot application.
 
 <img src="images/architecture.png" alt="Flow" width="100%"/>
 
