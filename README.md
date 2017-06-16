@@ -14,10 +14,9 @@ In the following sections you will discover how Blockchain technology can be use
 In this business scenario each participant has entered into a business agreement with each other and all parties are known and trusted by each other. For each contract deployment, one instance of the java project is running on the Blockchain. For our example, we will create only one contract between two people, but you can do as many as you want.  
 
 This demo has been simplified in the way:
-* No security has been enabled and configured.
-* We trust and assume that calls to Weather API will send back always the same value for each peer. We also trust Weather API data as a trustable oracle. (Calling a current temperature is NOT deterministic => Bad bad bad ! Normally it should be done the previous month average temperature to be sure to have a unique result)
-* We can do unlimited calls. Normally in a real case, the contract should be executed once relatively to a period corresponding to the average temperature of the previous month
-* The contract should contain a start and end date validity. You can do it as an extra exercise
+* We trust and assume that calls to Weather API will send back always the same value for each peer. We also trust Weather API data as a trustable oracle. (Calling a current temperature is NOT deterministic => This is bad ! Normally it is done on the previous month average temperature and it is deterministic)
+* We can do unlimited calls with our application. Normally in a real case, the contract should be executed once at the end of each month
+* The contract should contain a start + end validity date. You can do it as an extra exercise
 
 
 The project is split into different sub projects listed here on section [References](#references)
