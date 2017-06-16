@@ -171,11 +171,11 @@ services:
 - Finally, we add a dependency on service named membersrvc (which needs to be started before)
 - Parameter volumes will be used for vp0 only in order to deploy chaincode based on a file path. **Please change “/Users/benjaminfuentes/git” path with our own workspace path pointing to your chaincode project workspace directory (i.e /...../myWorkspace )**.Mounting is in this order “mylocalWorkspacePath:myMountedFolderOnDocker”.**Please do not change the name of the mounted folder on docker side “:/chaincode”**
 
-> For Windows, do not forget to share C drive for example. Otherwise the mount will not work … Also respect the \ paths 
+> For Windows, do not forget to share C drive for example. Otherwise the mount will not work … Also respect the \ path separator on Windows
 
 <img src="images/1-dockerwin.png" alt="1-dockerwin.png" width="100%"/>
 
-> YAML files are really boring strict with space indentation, be very careful. Copy/paste from correction files on links at the end of this document if you have any problem. Use spaces, no tabs !
+> YAML files are really strict with space indentation, be very careful. Use spaces, no tabs ! Copy/paste from correction files if you have any problem. 
 
 4.	Now that you have understood the configuration, you can add 3 more peers at the end of this file four-peer-ca.yaml: vp1, vp2, and vp3.
 - Copy paste vp0 block
