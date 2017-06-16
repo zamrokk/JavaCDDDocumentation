@@ -105,11 +105,11 @@ Now that you have tested a Blockchain on the Cloud, let’s do the same on your 
 
 Install Docker on your machine [here](https://docs.docker.com/engine/installation/#platform-support-matrix)
 
-We will use Hyperledger official Docker images to start a Blockchain network of 4 peers + 1 CA (Certificate Authority)
+We will use Hyperledger Fabric official Docker images to start a Blockchain network of 4 peers + 1 CA (Certificate Authority)
 
 Images are available [here](https://hub.docker.com/u/hyperledger)
 
-> If you encounter any problem during this lab, all the correction is available on the Github subprojects :grin:
+> If you encounter any problem during this lab, all the correction is available on the [Github subprojects](#references) :grin:
 
 All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command. We are using very basic commands that exists on all OS. 
 
