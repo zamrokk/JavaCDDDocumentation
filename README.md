@@ -632,7 +632,7 @@ Logs and Eclipse debug mode should be enough for you to check if the redeem amou
 
 2.	Compile all with Maven before launching tests, doing a Maven Install
 
-<img src="2-maveninstall.png" alt="2-maveninstall.png" width="100%"/>
+<img src="images/2-maveninstall.png" alt="2-maveninstall.png" width="100%"/>
 
 3.	Launch the Junit tests. Right click on project or test file and click Run as > JUnit Test or Debug as > JUnit Test
 
@@ -646,7 +646,7 @@ To deploy a chaincode we will use the HTTP API with Postman
 
 1. Open Postman and run DEPLOY V0.6
 
-<img src="2-deploy.png" alt="2-deploy.png" width="100%"/>
+<img src="images/2-deploy.png" alt="2-deploy.png" width="100%"/>
 
 > (Optional) 
 Be sure that your Blockchain network is running (see Part 1)
@@ -662,7 +662,7 @@ There is another way to deploy a chaincode using not a path by an url, just repl
 
 You should have a **200 OK**
 
-<img src="2-deployok.png" alt="2-deployok.png" width="100%"/>
+<img src="images/2-deployok.png" alt="2-deployok.png" width="100%"/>
 
 > In the returned Json, copy the value of result>message. It is the unique identifier of your chaincode, you will need it for after 
 
@@ -673,7 +673,7 @@ If all is OK, 4 new containers have been created and are running. Their names co
 
 2.	Call the query you coded to see if the default amount has been initialized
 
-<img src="2-postmanquery.png" alt="2-postmanquery.png" width="100%"/>
+<img src="images/2-postmanquery.png" alt="2-postmanquery.png" width="100%"/>
 
 You should have a **zero amount** on the message returned
 
@@ -683,7 +683,7 @@ You should have a **zero amount** on the message returned
 
 1. Run INVOKE V0.6
 
-<img src="2-postmaninvoke.png" alt="2-postmaninvoke.png" width="100%"/>
+<img src="images/2-postmaninvoke.png" alt="2-postmaninvoke.png" width="100%"/>
 
 Do not forget to change the chaincodeID as step before, let the default parameters pointing to Fairbanks and you should have a response **200 OK**. 
 
@@ -691,7 +691,7 @@ For information, the data result>message on the response corresponds to the tran
 
 Let’s call the query again to check the result 
 
-<img src="2-postmaninvokeok.png" alt="2-postmaninvokeok.png" width="100%"/>
+<img src="images/2-postmaninvokeok.png" alt="2-postmaninvokeok.png" width="100%"/>
 
 You should have an amount with value **42** on the message returned. This confirms that your farmer has been credited of 42$.
 
