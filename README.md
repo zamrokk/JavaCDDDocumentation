@@ -789,14 +789,266 @@ You maybe have noticed that we have changed the SDK dependency. It is because, w
 
 <img src="images/3-mycontroller.png" alt="3-mycontroller.png" width="50%"/>
 
-<img src="images/3-javapackage.png" alt="3-javapackage.png" width="50%"/>
+<img src="images/3-javapackage.png" alt="3-javapackage.png" width="100%"/>
+
+Create new java package and a new class MyController
+
+<img src="images/3-javaclass.png" alt="3-javaclass.png" width="100%"/>
+
+4.	Edit MyController.java
+
+```java
+@RestController
+@EnableAutoConfiguration
+public class MyController {
+
+	private static Log logger = LogFactory.getLog(MyController.class);
+
+	private Member registrar;
+
+	private String chainCodeID;
+	
+	private Chain chain;
+
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(MyController.class, args);
+	}
+
+}
+```
+
+For the moment, you can run MyController as a Java Application but does nothing more than starting a server and exposing the controller on http://localhost:8080
+
+**TIP:** If you start Spring Boot application and you have the port 8080 already in use, please kill the other process like this :
+```bash
+lsof -i tcp:8080
+kill mypidijustfoundwiththepreviouscommand
+```
+
+**TIP:** If you have any problem with JRE, just check you are using JDK8 on your project. Right click on your project, click on buildpath and see with JDK you are using.
+
+<img src="images/3-javabuildpath.png" alt="3-javabuildpath.png" width="100%"/>
+
+It is not JDK 8, remove the library, then click on the right panel to add library
+
+<img src="images/3-addlibrary.png" alt="3-addlibrary.png" width="100%"/>
+
+Then select JDK8 library and confirm
 
 
+Also sometimes Eclipse complains about JDK compliance, you can right click on project, Properties and filter “compliance”. You should have Java compiler compliance >= 1.7
 
+<img src="images/3-compliance.png" alt="3-compliance.png" width="100%"/>
+
+## Deployment
+
+1. Write the Constructor and deploy function
+
+```java
+public MyController() throws Exception {
+		logger.info("In MyController constructor ...");
+
+		 chain = new Chain("javacdd");
+		 chain.setDeployWaitTime(60*5);
+		try {
+
+			chain.setMemberServicesUrl("grpc://localhost:7054", null);
+			// create FileKeyValStore
+			Path path = Paths.get(System.getProperty("user.home"), "/test.properties");
+			if (Files.notExists(path))
+				Files.createFile(path);
+			chain.setKeyValStore(new FileKeyValStore(path.toString()));
+			chain.addPeer("grpc://localhost:7051", null);
+
+			registrar = chain.getMember("admin");
+			if (!registrar.isEnrolled()) {
+				registrar = chain.enroll("admin", "Xurw3yU9zI0l");
+			}
+			logger.info("registrar is :" + registrar.getName() + ",secret:" + registrar.getEnrollmentSecret());
+			chain.setRegistrar(registrar);
+			chain.eventHubConnect("grpc://localhost:7053", null);
+
+			chainCodeID = deploy();
+
+		} catch (CertificateException | IOException  e) {
+			logger.error(e.getMessage(), e);
+			throw new Exception(e);
+		}
+		logger.info("Out MyController constructor.");
+
+	}
+```
+
+Chain object will represent the chaincode deployed.
+
+We are configuring MemberServices url in order to register a user admin and get the signing & encryption certificates that we will store in our local wallet saved under test.properties file.
+
+We are configuring the peer to whom we will discuss with
+
+We are enrolling the user admin the first time to get the keys, but next time we will retrieve it from the local wallet on the machine. Be careful in case you failed storing the keys the first time because the CA will consider that the user has been enrolled and we no more deliver the keys. You will need to clean all CA database so we recommend to destroy the full network with docker-compose and redo a new one.
+
+We are connecting to peer eventhub to catch all failures and success messages after we call invocation methods. As the system is asynchronous, it is the only way to know if the grpc call finally succeeded.
+
+Finally, we are deploying our chaincode and get the chaincodeID back
+
+2.	Write the deploy function now. **Your path should point to the folder of your chaincode project**
+
+```java
+String deploy() throws ChainCodeException, NoAvailableTCertException, CryptoException, IOException {
+		DeployRequest deployRequest = new DeployRequest();
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("init");
+		args.add("farmer");
+		args.add("10");
+		args.add("42");
+		deployRequest.setArgs(args);
+		deployRequest.setChaincodePath(Paths.get(System.getProperty("user.home"), "git", "JavaCDD").toString());
+		deployRequest.setChaincodeLanguage(ChaincodeLanguage.JAVA);
+		deployRequest.setChaincodeName(chain.getName());
+
+		ChainCodeResponse chainCodeResponse = registrar.deploy(deployRequest);
+		return chainCodeResponse.getChainCodeID();
+	}
+```
+
+We are building a DeployRequest and the registrar is submitting it to the peer (the SDK signing under the hood)
+Finally we return the chaincodeID that needs to be used later
+
+## Queries
+
+Let’s write our query to obtain the total redeemed amount of a client 
+
+```java
+@RequestMapping(method = RequestMethod.GET, path = "/query", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	String query(@RequestParam String clientName) throws JsonProcessingException {
+
+		logger.info("Calling /query ...");
+
+		QueryRequest queryRequest = new QueryRequest();
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("query");
+		args.add(clientName);
+		queryRequest.setArgs(args);
+		queryRequest.setChaincodeLanguage(ChaincodeLanguage.JAVA);
+		queryRequest.setChaincodeID(chainCodeID);
+
+		try {
+			ChainCodeResponse chainCodeResponse = registrar.query(queryRequest);
+			logger.info("End call /query.");
+
+			return new ObjectMapper().writeValueAsString(chainCodeResponse);
+		} catch (ChainCodeException | NoAvailableTCertException | CryptoException | IOException e) {
+			logger.error("Error", e);
+			return new ObjectMapper().writeValueAsString(e);
+		}
+
+		
+	}
+```
+
+We are exposing a GET API under /query and we need the client name on input. We are building a QueryRequest object that will be submitted by the registrar, etc … the response will be sent on the body of the message on JSON format
+
+## Invocations
+
+Same as above but for the invocation function of the chaincode
+
+```java
+@RequestMapping(method = RequestMethod.GET, path = "/executeContract", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	String executeContract(@RequestParam String clientName, @RequestParam String postalCode,
+			@RequestParam String countryCode) throws JsonProcessingException {
+
+		logger.info("Calling /executeContract ...");
+		InvokeRequest invokeRequest = new InvokeRequest();
+		ArrayList<String> args = new ArrayList<String>();
+		args.add("executeContract");
+		args.add(clientName);
+		args.add(postalCode);
+		args.add(countryCode);
+		invokeRequest.setArgs(args);
+		invokeRequest.setChaincodeLanguage(ChaincodeLanguage.JAVA);
+		invokeRequest.setChaincodeID(chainCodeID);
+		invokeRequest.setChaincodeName(chain.getName());
+
+		try {
+			
+			
+			ChainCodeResponse chainCodeResponse = registrar.invoke(invokeRequest);
+			logger.info("End call /executeContract.");
+
+			return new ObjectMapper().writeValueAsString(chainCodeResponse);
+		} catch (ChainCodeException | NoAvailableTCertException | CryptoException | IOException e) {
+			logger.error("Error", e);
+			return new ObjectMapper().writeValueAsString(e);
+		}
+
+	}
+```
+
+We are exposing a GET API under /executeContract and we need the client name, postal code and country code on input. We are building an InvokeRequest object that will be submitted by the registrar, etc … the response will be sent on the body of the message on JSON format
 
 # Test with the Spring Boot application
 
-//TODO
+1.	So you have now a client application that runs on a secured network.
+Let’s do some modifications on the work done on Part1 to make it secure.
+
+Remember the file /base/peer-unsecure-base.yaml, edit now this property:
+
+```yaml
+- CORE_SECURITY_ENABLED=true
+```
+
+Also, the peers will need to be authenticated on the network, not only the users, so for each peer on the file four-peer-ca.yaml, add these new properties on the block environment
+
+For vp0:
+```yaml
+- CORE_SECURITY_ENROLLID=test_vp0
+- CORE_SECURITY_ENROLLSECRET=MwYpmSRjupbT
+```
+
+For vp1:
+```yaml
+- CORE_SECURITY_ENROLLID=test_vp1
+- CORE_SECURITY_ENROLLSECRET=5wgHK9qqYaPy
+```
+
+For vp2:
+```yaml
+- CORE_SECURITY_ENROLLID=test_vp2
+- CORE_SECURITY_ENROLLSECRET=vQelbRvja7cJ
+```
+
+For vp3:
+```yaml
+- CORE_SECURITY_ENROLLID=test_vp3
+- CORE_SECURITY_ENROLLSECRET=9LKqKH5peurL
+```
+
+2. Now that the network runs with security enabled, you will need to add extra security jars to your JDK.
+
+Download [this zip](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html), and extract it on the folder **${java.home}/jre/lib/security/**
+
+3. You will have to solve an issue due to official Hyperledger images. It refers to a Docker javaenv image named hyperledger/fabric-javaenv:latest .Sadly this image does not exist so here is the trick :
+
+```bash
+docker pull hyperledger/fabric-javaenv:x86_64-0.6.1-preview
+docker tag hyperledger/fabric-javaenv:x86_64-0.6.1-preview hyperledger/fabric-javaenv:latest
+```
+
+4. You will need to destroy your network and rebuild it with docker-compose
+
+```bash
+docker-compose -f four-peer-ca.yaml down
+docker-compose -f four-peer-ca.yaml up
+```
+
+5. Compile all with Maven
+
+<img src="images/3-compile.png" alt="3-compile.png" width="100%"/>
+
+
+
 
 ## Contributing
 [link](CONTRIBUTING.md)
