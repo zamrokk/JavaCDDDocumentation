@@ -32,9 +32,9 @@ Then, we develop a client application using the Java SDK with security enabled. 
 
 1. The user opens Postman to do HTTP calls (DEPLOY,QUERY,INVOKE requests)
 2. A query or invoke request is sent to a peer where a chaincode has been already deployed
-3. The peer reads the Ledger state and/or creates a new transaction that is dispatched over the other peers
+3. The peer reads the Ledger state and/or creates a new transaction which is dispatched to the other peers
 4. The user is using now the Spring Boot application API to interact with the blockchain network
-5. As the application has started, the user has been enrolled with the CA
+5. When the application has started, the user has been enrolled with the CA
 6. The application is using the Java SDK and the user certificate to communicate with the peer
 7. Same as step 3
 
