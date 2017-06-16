@@ -21,7 +21,7 @@ This demo has been simplified in the way:
 
 The project is split into different sub projects listed here on section [References](#references)
 
-An introduction to Bluemix Blockchain as a Service is part of this tutorial promoting the IBM infrastructure to host the network in Production. Remember that blockchain is a distributed system of several nodes, each one can consume potential high resources depending of the distributed applications you deploy on the network. For a tutorial is more suitable to run it on a development mode locally as we don't need such resources.
+An introduction to Bluemix Blockchain as a Service is part of this tutorial promoting the IBM infrastructure to host the network in Production. Remember that blockchain is a distributed system of several nodes, each one can consume potential high resources depending of the distributed application complexity you deploy on the network. For a tutorial is more suitable to run it on a development mode locally as we don't need such resources.
 
 ## Flow
 
