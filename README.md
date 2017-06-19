@@ -509,7 +509,7 @@ If the temperature is below, then the client will have its account credited with
 * 
 * @param stub
 * @param args
-*            client name, postal Code, country Code
+*            client name, lon, lat
 * @return
 */
 public String executeContract(ChaincodeStub stub, String[] args) {
@@ -517,7 +517,7 @@ public String executeContract(ChaincodeStub stub, String[] args) {
 Boolean contractExecuted = false;
 
 	if (args.length != 3) {
-		String errorMessage = "{\"Error\":\"Incorrect number of arguments. Expecting 3: client name, postal Code, country Code\"}";
+		String errorMessage = "{\"Error\":\"Incorrect number of arguments. Expecting 3: client name, lon, lat\"}";
 		log.error(errorMessage);
 		return errorMessage;
 	}
@@ -532,11 +532,11 @@ Boolean contractExecuted = false;
 		return errorMessage;
 	}
 
-	String postalCode = args[1];
-	String countryCode = args[2];
+	String lon = args[1];
+	String lat = args[2];
 
 	// weather service
-	String url = "https://twcservice.mybluemix.net/api/weather/v1/location/" + postalCode + "%3A4%3A" + countryCode
+			String url = "https://twcservice.mybluemix.net/api/weather/v1/geocode/" + lon + "/" + lat
 				+ "/observations.json?language=en-GB";
 
 	HttpClient httpclient = new DefaultHttpClient();
@@ -559,7 +559,7 @@ Boolean contractExecuted = false;
 
 	((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
 				new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-				new UsernamePasswordCredentials("dfa7551a-2613-4f5c-bff7-339649770aa5", "gvbmK5JsGO"));
+				new UsernamePasswordCredentials("e0dad847-4c19-40bb-90f6-dc3ccd65c05c", "brzJM3ERHw"));
 
 	HttpResponse response;
 	try {
@@ -898,7 +898,7 @@ String deploy() throws ChainCodeException, NoAvailableTCertException, CryptoExce
 		ArrayList<String> args = new ArrayList<String>();
 		args.add("init");
 		args.add("farmer");
-		args.add("10");
+		args.add("20");
 		args.add("42");
 		deployRequest.setArgs(args);
 		deployRequest.setChaincodePath(Paths.get(System.getProperty("user.home"), "git", "JavaCDD").toString());
@@ -955,16 +955,16 @@ Same as above but for the invocation function of the chaincode
 ```java
 @RequestMapping(method = RequestMethod.GET, path = "/executeContract", produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	String executeContract(@RequestParam String clientName, @RequestParam String postalCode,
-			@RequestParam String countryCode) throws JsonProcessingException {
+	String executeContract(@RequestParam String clientName, @RequestParam String lon,
+			@RequestParam String lat) throws JsonProcessingException {
 
 		logger.info("Calling /executeContract ...");
 		InvokeRequest invokeRequest = new InvokeRequest();
 		ArrayList<String> args = new ArrayList<String>();
 		args.add("executeContract");
 		args.add(clientName);
-		args.add(postalCode);
-		args.add(countryCode);
+		args.add(lon);
+		args.add(lat);
 		invokeRequest.setArgs(args);
 		invokeRequest.setChaincodeLanguage(ChaincodeLanguage.JAVA);
 		invokeRequest.setChaincodeID(chainCodeID);
