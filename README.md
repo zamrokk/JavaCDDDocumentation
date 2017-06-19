@@ -194,7 +194,7 @@ services:
 
 Save and close file.
 
-5.	As that the main file is done, let’s create the common peer file base/peer-unsecure-base.yaml
+5.	The main file is done, let’s create the common peer file base/peer-unsecure-base.yaml
 ```bash
 mkdir base
 touch base/peer-unsecure-base.yaml
@@ -294,7 +294,7 @@ To install Postman [here](https://www.getpostman.com)
 
 Launch it from the menu bar and import the file from [download link](https://github.com/zamrokk/JavaCDD/blob/master/postman.json)
 
-You can pull it from Git or save the raw text from your browser 
+You can pull it with Git or save the raw text from your browser 
 
 <img src="images/1-importPostman.png" alt="1-importPostman.png" width="100%"/>
 
@@ -340,7 +340,7 @@ Copy theses files from the project url into its correct folder (https://github.c
 - /src/main/java/com/ibm/WeatherObservationResponse.java
 - /src/test/java/com/ibm/JavaCDDTest.java
 
-3. Have a look on the project structure. You have the choice to use Maven or Gradle for development but Gradle will be mandatory when the code will be deployed as Gradle file will be only run by Hyperledger on version V0.6.1
+3. Have a look on the project structure. You have the choice to use Maven or Gradle for development but Gradle will be mandatory when the code will be deployed as Gradle file will be only run by Hyperledger Fabric on version V0.6.1
    
 At the moment, you have 2 POJOs class files: 
 - ContractRecord
@@ -499,7 +499,7 @@ public String init(ChaincodeStub stub, String function, String[] args) {
 
 If the temperature is below, then the client will have its account credited with the redemption agreement amount of the contract, otherwise nothing happens.
 
-> (Credentials of the service API have been hardcoded, you can change this value with your own credentials on Bluemix)
+> (Credentials of the Weather service API have been hardcoded and are expired, you can change this value with your own credentials on Bluemix)
 
 ```java
 /**
@@ -624,12 +624,12 @@ For more info about [mockito](http://site.mockito.org)
 1.	On your project, go to folder /src/test/java. You will find a class named JavaCDDTest
 
 There are two Junit test cases on it.
-Nice test case should always execute the contract but not increment the client’s account
+Nice test case should always execute the contract but not increment the client’s account. 
 Fairbanks should increment (as it is very cold there!)
 
 Logs and Eclipse debug mode should be enough for you to check if the redeem amount has changed.
 
-2.	Compile all with Maven before launching tests, doing a Maven Install
+2.	Compile all with Maven before launching tests, doing a Maven Install (mvn install)
 
 <img src="images/2-maveninstall.png" alt="2-maveninstall.png" width="100%"/>
 
@@ -648,33 +648,33 @@ To deploy a chaincode we will use the HTTP API with Postman
 <img src="images/2-deploy.png" alt="2-deploy.png" width="100%"/>
 
 > (Optional) 
-Be sure that your Blockchain network is running (see Part 1)
-Also check that your project name is corresponding to the mounted path /chaincode/JavaCDD. Use docker to list files on mounted folder
-(replace in red by your vp0 container id). Ajust the container path in Postman it your project is located differently.
+First, be sure that your Blockchain network is running (see Part 1). 
+Also check that your project name is corresponding to the mounted path /chaincode/JavaCDD. Use docker to list files on mounted folder.
+Change the container path in Postman if your project is at different location.
 
 ```bash
 docker exec -it PEERVP0CONTAINERID /bin/bash
 ls /chaincode
 ```
 > (Optional)
-There is another way to deploy a chaincode using not a path by an url, just replace the path value by the url.
+For information, there is another way to deploy a chaincode using an url and not a path.
 
 You should have a **200 OK**
 
 <img src="images/2-deployok.png" alt="2-deployok.png" width="100%"/>
 
-> In the returned Json, copy the value of result>message. It is the unique identifier of your chaincode, you will need it for after 
+> In the returned Json, copy the value of result>message. It is the **unique identifier of your chaincode**, you will need it for after 
 
-The deployment is asynchronous. Even if Hyperledger send you back a correct response, it just means that your request was correct and has been processed. To be sure that the new smart contract has been started, go to a console and do a docker ps. If you see a container name containing the chaincode ID of your request, it means the smart contract is running. Speed depends on the performance of your machine and the size of the code, it can take from 2s to few minutes
+The deployment is asynchronous. Even if Hyperledger Fabric sends you back a correct response, it just means that your request was correct and has been processed. To be sure that the new smart contract has been started, go to a console and do a docker ps. If you see a container name containing the chaincode ID of your request, it means the smart contract is running. Speed depends on the performance of your machine and the size of the code, it can take from 2s to few minutes
 
-If you see an ERROR in the peer container vp0 logs, you may had a path not pointing to your project location … Check it well.
-If all is OK, 4 new containers have been created and are running. Their names contains the chaincodeID you got and the response.
+If you see an **ERROR** on the peer container vp0 logs, maybe deployment failed because you may point to a wrong path location … Check it well.
+If all is **OK**, 4 new docker containers have been created and are running. Their names is composed by the chaincodeID you got on the deployement response message.
 
 2.	Call the query you coded to see if the default amount has been initialized
 
 <img src="images/2-postmanquery.png" alt="2-postmanquery.png" width="100%"/>
 
-You should have a **zero amount** on the message returned
+You should have a **zero amount** on the returned message
 
 > On the request body, do not forget to change params>chaincodeID>name by the one returned on the previous step
 
@@ -684,22 +684,22 @@ You should have a **zero amount** on the message returned
 
 <img src="images/2-postmaninvoke.png" alt="2-postmaninvoke.png" width="100%"/>
 
-Do not forget to change the chaincodeID as step before, let the default parameters pointing to Fairbanks and you should have a response **200 OK**. 
+Do not forget to change the chaincodeID as step before, let the default parameters pointing to Fairbanks location and you should have a response **200 OK**. 
 
-For information, the data result>message on the response corresponds to the transaction ID
+> For information, the data result>message on the response corresponds to the transaction ID
 
 Let’s call the query again to check the result 
 
 <img src="images/2-postmaninvokeok.png" alt="2-postmaninvokeok.png" width="100%"/>
 
-You should have an amount with value **42** on the message returned. This confirms that your farmer has been credited of 42$.
+You should have an amount with value **42** on the returned message. This confirms that your farmer has been credited of 42$.
 
 
 # Develop the application with SDK
 
 ## Initialization
 
-We will now use the Java SDK to interact with our blockchain instead of the HTTP API. HTTP API will be deprecated on V1.0 of Hyperledger so we will need to use GRPC channel to communicate with the network, it on what is based the SDK.
+We will now use the Java SDK to interact with our blockchain instead of the HTTP API. HTTP API will be deprecated on V1.0 of Hyperledger Fabric so we will need to use GRPC channel to communicate with the network (the SDK uses grpc).
 
 We want to use a real java client app to keep our wallet safe, so we choose to use a simple spring boot project and build an API over it for testing (You could do it with any other java application using JavaFx, Swing or whatever support the SDK which is built on java 8)
 
@@ -782,7 +782,7 @@ you can edit as above, but we will override it on the next step anyway
 
 This is the simplest configuration that we can have to have a REST API ready
 
-You maybe have noticed that we have changed the SDK dependency. It is because, we will need the last version of the Git branch 0.6 and it has not been released officially yet on Maven Central. 
+You maybe have noticed that we have changed the SDK dependency. It is because, we will need the last developments of the Git branch 0.6 and it has not been released officially yet on Maven Central. 
 
 3. Create a controller class named MyController on the package com.ibm.controller 
 
@@ -890,7 +890,7 @@ We are connecting to peer eventhub to catch all failures and success messages af
 
 Finally, we are deploying our chaincode and get the chaincodeID back
 
-2.	Write the deploy function now. **Your path should point to the folder of your chaincode project**
+2.	Write the deploy function now. **Your ChaincodePath should point to the folder of your chaincode project, change it!**
 
 ```java
 String deploy() throws ChainCodeException, NoAvailableTCertException, CryptoException, IOException {
@@ -910,7 +910,7 @@ String deploy() throws ChainCodeException, NoAvailableTCertException, CryptoExce
 	}
 ```
 
-We are building a DeployRequest and the registrar is submitting it to the peer (the SDK signing under the hood)
+We are building a DeployRequest and the registrar is submitting it to the peer (the SDK is signing under the hood)
 Finally we return the chaincodeID that needs to be used later
 
 ## Queries
@@ -985,12 +985,12 @@ Same as above but for the invocation function of the chaincode
 	}
 ```
 
-We are exposing a GET API under /executeContract and we need the client name, postal code and country code on input. We are building an InvokeRequest object that will be submitted by the registrar, etc … the response will be sent on the body of the message on JSON format
+We are exposing a GET API under /executeContract and we need the client name, postal code and country code as inputs. We are building an InvokeRequest object that will be submitted by the registrar, etc … the response will be sent on the body of the message on JSON format
 
 # Test with the Spring Boot application
 
 1.	So you have now a client application that runs on a secured network.
-Let’s do some modifications on the work done on Part1 to make it secure.
+Let’s do some modifications on the work done on Part1 to make it secured.
 
 Remember the file /base/peer-unsecure-base.yaml, edit now this property:
 
@@ -1028,7 +1028,7 @@ For vp3:
 
 Download [this zip](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html), and extract it on the folder **${java.home}/jre/lib/security/**
 
-3. You will have to solve an issue due to official Hyperledger images. It refers to a Docker javaenv image named hyperledger/fabric-javaenv:latest .Sadly this image does not exist so here is the trick :
+3. There is an issue on official Hyperledger images. It refers to a Docker javaenv image named hyperledger/fabric-javaenv:latest .Sadly this image does not exist so here is the trick :
 
 ```bash
 docker pull hyperledger/fabric-javaenv:x86_64-0.6.1-preview
@@ -1050,23 +1050,23 @@ docker-compose -f four-peer-ca.yaml up
 
 <img src="images/3-start.png" alt="3-start.png" width="100%"/>
 
-> If you have an error “Identity or token does not match”. Is because you have launched several time your server and maybe you have crashed on the client side getting a broken certificate. As the Member Service on the Blockchain network will accept only to send you one time this credentials, the best is to destroy the network and relaunch it again. Also, delete the wallet on your local path ~/test.properties. Then launch again your Spring boot application.
+> If you have an error **“Identity or token does not match”**. It is because you have launched several time your server and maybe you have crashed on the client side getting a broken certificate. As the Member Service on the Blockchain network will accept only to send you one time this credentials, the best is to destroy the network and relaunch it again. Also, delete the wallet on your local path ~/test.properties. Then launch again your Spring boot application.
 
 7. Open again Postman and select QUERY CLIENT V0.6, click on SEND
 
-You should have the API responding SUCCESS with **message “0”** if the client has not been redeemed yet
+You should have the API responding **SUCCESS** with **message “0”** if the client has not been redeemed yet
 
 <img src="images/3-query.png" alt="3-query.png" width="100%"/>
 
 8. Now select INVOKE CLIENT V0.6, click on SEND
 
-You should have the API responding SUCCESS 
+You should have the API responding **SUCCESS** 
 
 <img src="images/3-invoke.png" alt="3-invoke.png" width="100%"/>
 
 9. Try again QUERY CLIENT V0.6, click on SEND
 
-You should have the API responding SUCCESS with **message “42”** because the client has been redeemed
+You should have the API responding **SUCCESS** with **message “42”** because the client has been redeemed
 
 <img src="images/3-query42.png" alt="3-query42.png" width="100%"/>
 
