@@ -625,7 +625,7 @@ For more info about [mockito](http://site.mockito.org)
 
 There are two Junit test cases on it.
 Nice test case should always execute the contract but not increment the client’s account. 
-Fairbanks should increment (as it is very cold there!)
+Alaska should increment (as it is very cold there!)
 
 Logs and Eclipse debug mode should be enough for you to check if the redeem amount has changed.
 
@@ -684,7 +684,7 @@ You should have a **zero amount** on the returned message
 
 <img src="images/2-postmaninvoke.png" alt="2-postmaninvoke.png" width="100%"/>
 
-Do not forget to change the chaincodeID as step before, let the default parameters pointing to Fairbanks location and you should have a response **200 OK**. 
+Do not forget to change the chaincodeID as step before, let the default parameters pointing to Alaska location and you should have a response **200 OK**. 
 
 > For information, the data result>message on the response corresponds to the transaction ID
 
