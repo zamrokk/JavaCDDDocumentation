@@ -111,7 +111,7 @@ Images are available [here](https://hub.docker.com/u/hyperledger)
 
 > If you encounter any problem during this lab, all the correction is available on the [Github subprojects](#references) :grin:
 
-All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command on the PowerShell or use Linux Bash Shell. (We are using very basic commands that exists on all OS)
+All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command on the PowerShell or use Linux Bash Shell. (We are using very basic commands that exist on all OS)
 
 1. Create a Docker file from the official image. Open a console and type theses commands (choose any workspace folder on your machine)
 
@@ -181,7 +181,7 @@ services:
 - Copy paste vp0 block
 - Rename peer name
 - Rename CORE_PEER_ID
-- Translate local machine ports with 1000 offset (i.e. vp1 from 8050 to 8053, vp2 from 9050 to 9053 and vp4 from 10050 to 10053). Inside container ports are kept the same obviously
+- Translate **ONLY** local machine ports with 1000 offset (i.e. the first part on vp1 from 8050 to 8053, vp2 from 9050 to 9053 and vp4 from 10050 to 10053). Inside container ports are kept the same obviously
 - You do not need to mount a volume as we will deploy chaincode only on vp0.
 - Also you will need to add this on the environment section to refer to the first node : 
 ```yaml
@@ -350,7 +350,7 @@ You have a test class available: JavaCDDTest
    
 You will be asked to code a JavaCDD class file that extends ChaincodeBase
 
-4. Create a new class JavaCDD on package com.ibm that’s extends ChaincodeBase. You will write later a main method. You can see that some methods need to be implemented too.
+4. Create a new class JavaCDD on package com.ibm that extends ChaincodeBase. You will write later a main method. You can see that some methods need to be implemented too.
 
 5. Look at dependencies to see from which package is coming ChaincodeBase class. The fabric-sdk-java jar will be downloaded automatically during compilation. Open pom.xml and build.gradle
 
@@ -499,7 +499,7 @@ public String init(ChaincodeStub stub, String function, String[] args) {
 
 If the temperature is below, then the client will have its account credited with the redemption agreement amount of the contract, otherwise nothing happens.
 
-> (Credentials of the Weather service API have been hardcoded and are expired, you can change this value with your own credentials on Bluemix)
+> Credentials of the Weather service API have been hardcoded and are expired, you can change this value with your own credentials on Bluemix. Here is the link to create a new instance of the service : [link](https://console.bluemix.net/catalog/services/weather-company-data). You need to change **UsernamePasswordCredentials** value on the code below
 
 ```java
 /**
@@ -890,7 +890,7 @@ We are connecting to peer eventhub to catch all failures and success messages af
 
 Finally, we are deploying our chaincode and get the chaincodeID back
 
-2.	Write the deploy function now. **Your ChaincodePath should point to the folder of your chaincode project, change it!**
+2.	Write the deploy function now. **Your ChaincodePath should point to the folder of your chaincode project. If it is different, change it!**
 
 ```java
 String deploy() throws ChainCodeException, NoAvailableTCertException, CryptoException, IOException {
@@ -998,7 +998,7 @@ Remember the file /base/peer-unsecure-base.yaml, edit now this property:
 - CORE_SECURITY_ENABLED=true
 ```
 
-Also, the peers will need to be authenticated on the network, not only the users, so for each peer on the file four-peer-ca.yaml, add these new properties on the block environment
+Also, the peers will need to be authenticated on the network, not only the users, so for each peer on the file four-peer-ca.yaml, add these new properties on the block **environment**
 
 For vp0:
 ```yaml
@@ -1078,7 +1078,7 @@ You should have the API responding **SUCCESS** with **message “42”** because
 You have successfully invoked your chaincode and incremented the client account. You know can now:
 - Change location parameters while invoking chaincode
 - Change the code adding begin and end date validity checks
-- Plug another temperature feed from an external API service or IoT device
+- Plug other feeds from an external API services
 - Make the code more deterministic !
 
 ## Contributing
