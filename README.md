@@ -1,7 +1,7 @@
 # JavaCDD Documentation
 The documentation for JavaCDD tutorial
 
-This tutorial helps you understand how to set a blockchain network locally based on Hyperledger Fabric V0.6, create a simple smart contract in Java and interact with it using the HTTP API and the SDK.
+This tutorial helps you understand how to set a blockchain network based on Hyperledger Fabric V0.6, create a simple smart contract in Java and interact with it using the HTTP API and the SDK.
 
 In the following sections you will discover how Blockchain technology can be used to sign contract between a farmer and an insurer and then to trigger changes on the contract’s state. CDD derivative is an insurance for farmers to hedge against poor harvests caused by failing rains during the growing period, excessive rain during harvesting, high winds in case of plantations or temperature variabilities in case of greenhouse crops. In a CDD case, every time the average day degree passes under a threshold, a client could receive a payment, smoothing earnings.
 
@@ -11,10 +11,10 @@ In the following sections you will discover how Blockchain technology can be use
 
 <img src="images/usecase.png" alt="Usecase" width="100%"/>
 
-In this business scenario each participant has entered into a business agreement with each other and all parties are known and trusted by each other. For each contract deployment, one instance of the java project is running on the Blockchain. For our example, we will create only one contract between two people, but you can do as many as you want.  
+In this business scenario each participant has entered into a business agreement with each other and all parties are known and trusted by each other. For each contract deployment, one instance of the java project is started. For our example, we will create only one contract between two people, but you can do as many as you want.  
 
 This demo has been simplified in the way:
-* We trust and assume that calls to Weather API will send back always the same value for each peer. We also trust Weather API data as a trustable oracle. (Calling a current temperature is NOT deterministic => This is bad ! Normally it is done on the previous month average temperature and it is deterministic)
+* We trust and assume that calls to Weather API will send back always the same value for each peer. We also trust Weather API data as a trustable oracle. (Calling a current temperature is NOT deterministic => This is bad ! Normally it is done on the previous month average temperature and this is deterministic)
 * We can do unlimited calls with our application. Normally in a real case, the contract should be executed once at the end of each month
 * The contract should contain a start + end validity date. You can do it as an extra exercise
 
@@ -26,15 +26,15 @@ An introduction to Bluemix Blockchain as a Service is part of this tutorial prom
 ## Flow
 
 This flow is in two part, first the user is interacting via HTTP directly to the peer without security.
-Then, we develop a client application using the Java SDK with security enabled. The user will interact via the HTTP API on top of the Spring Boot application.
+Then, we develop a client application using the Java SDK with security enabled. The user will interact via the HTTP API on top of a Java web application.
 
 <img src="images/architecture.png" alt="Flow" width="100%"/>
 
 1. The user opens Postman to do HTTP calls (DEPLOY,QUERY,INVOKE requests)
 2. A query or invoke request is sent to a peer where a chaincode has been already deployed
 3. The peer reads the Ledger state and/or creates a new transaction which is dispatched to the other peers
-4. The user is using now the Spring Boot application API to interact with the blockchain network
-5. When the application has started, the user has been enrolled with the CA
+4. The user is using now the web application API to interact with the blockchain network
+5. When the web application has started, the user has been enrolled with the CA
 6. The application is using the Java SDK and the user certificate to communicate with the peer
 7. Same as step 3
 
@@ -64,7 +64,7 @@ Then, we develop a client application using the Java SDK with security enabled. 
 3. [Develop the chaincode](#develop-the-chaincode)
 4. [Test with HTTP API](#test-with-http-api)
 5. [Develop the application with SDK](#develop-the-application-with-sdk)
-6. [Test with the Spring Boot application](#test-with-the-spring-boot-application)
+6. [Test with the web application](#test-with-the-web-application)
 
 # Blockchain as a Service on Bluemix
 
@@ -99,7 +99,7 @@ Now that you have a blockchain network running, go to the menu Demo Chaincode to
 <img src="images/1-deploydemo.png" alt="1-deploydemo.png" width="100%"/>
 
 
-# Set up the network
+# Set up the network locally
 
 Now that you have tested a Blockchain on the Cloud, let’s do the same on your machine. We will explain a little bit more the way to deploy your own Blockchain network
 
@@ -111,7 +111,7 @@ Images are available [here](https://hub.docker.com/u/hyperledger)
 
 > If you encounter any problem during this lab, all the correction is available on the [Github subprojects](#references) :grin:
 
-All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command. We are using very basic commands that exists on all OS. 
+All commands below are for Unix machines (Linux, MacOs, Debian, Ubuntu, etc… ). If you use another OS like Windows, just transcript the command on the PowerShell or use Linux Bash Shell. (We are using very basic commands that exists on all OS)
 
 1. Create a Docker file from the official image. Open a console and type theses commands (choose any workspace folder on your machine)
 
@@ -987,7 +987,7 @@ Same as above but for the invocation function of the chaincode
 
 We are exposing a GET API under /executeContract and we need the client name, postal code and country code as inputs. We are building an InvokeRequest object that will be submitted by the registrar, etc … the response will be sent on the body of the message on JSON format
 
-# Test with the Spring Boot application
+# Test with the web application
 
 1.	So you have now a client application that runs on a secured network.
 Let’s do some modifications on the work done on Part1 to make it secured.
